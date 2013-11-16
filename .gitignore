@@ -1,0 +1,8 @@
+
+# Ignore build generated files
+build
+.lock-waf_*
+
+# Ignore editor temporary files
+.*.swp
+*~
