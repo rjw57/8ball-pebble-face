@@ -1,9 +1,9 @@
 #include <pebble.h>
 #include "eight-ball.h"
+#include "eight-ball-layer.h"
 
 static Window *window;
-static TextLayer *text_layer;
-static TextLayer *fortune_text_layer;
+static EightBallLayer *eight_ball_layer;
 
 #define TEXT_LEN 32
 
@@ -11,25 +11,22 @@ static TextLayer *fortune_text_layer;
 static void handle_minute_tick(struct tm* tick_time, TimeUnits units_changed) {
     static char tmp_str[TEXT_LEN];
     strftime(tmp_str, sizeof(tmp_str), "%H:%M", tick_time);
-    text_layer_set_text(text_layer, tmp_str);
+    eight_ball_layer_set_text(eight_ball_layer, tmp_str);
 }
 
 static void handle_tap(AccelAxisType axis, int32_t direction)
 {
-    text_layer_set_text(fortune_text_layer, eight_ball_messages[rand() % EIGHT_BALL_MESSAGE_COUNT]);
+    eight_ball_layer_set_text(eight_ball_layer, eight_ball_messages[rand() % EIGHT_BALL_MESSAGE_COUNT]);
 }
 
 static void window_load(Window *window) {
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
 
-    text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 20 } });
-    text_layer_set_text(text_layer, "");
-    text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
-
-    fortune_text_layer = text_layer_create((GRect) { .origin = { 0, 100 }, .size = { bounds.size.w, 20 } });
-    text_layer_set_text(fortune_text_layer, "");
-    text_layer_set_text_alignment(fortune_text_layer, GTextAlignmentCenter);
+    eight_ball_layer = eight_ball_layer_create((GRect) {
+            .origin = { 0, (bounds.size.h-bounds.size.w)>>1},
+            .size = { bounds.size.w, bounds.size.w }
+    });
 
     // Ensures time is displayed immediately (will break if NULL tick event accessed).
     // (This is why it's a good idea to have a separate routine to do the update itself.)
@@ -40,13 +37,11 @@ static void window_load(Window *window) {
 
     accel_tap_service_subscribe(&handle_tap);
 
-    layer_add_child(window_layer, text_layer_get_layer(text_layer));
-    layer_add_child(window_layer, text_layer_get_layer(fortune_text_layer));
+    layer_add_child(window_layer, eight_ball_layer_get_layer(eight_ball_layer));
 }
 
 static void window_unload(Window *window) {
-    text_layer_destroy(text_layer);
-    text_layer_destroy(fortune_text_layer);
+    eight_ball_layer_destroy(eight_ball_layer);
 }
 
 static void init(void) {
