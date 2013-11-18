@@ -4,6 +4,8 @@
 
 static Window *window;
 static EightBallLayer *eight_ball_layer;
+static BitmapLayer *background_layer;
+static GBitmap* background_bitmap;
 
 #define TEXT_LEN 32
 
@@ -28,6 +30,11 @@ static void window_load(Window *window) {
             .size = { bounds.size.w, bounds.size.w }
     });
 
+    background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_BACKGROUND);
+
+    background_layer = bitmap_layer_create(bounds);
+    bitmap_layer_set_bitmap(background_layer, background_bitmap);
+
     // Ensures time is displayed immediately (will break if NULL tick event accessed).
     // (This is why it's a good idea to have a separate routine to do the update itself.)
     time_t now = time(NULL);
@@ -37,11 +44,14 @@ static void window_load(Window *window) {
 
     accel_tap_service_subscribe(&handle_tap);
 
+    layer_add_child(window_layer, bitmap_layer_get_layer(background_layer));
     layer_add_child(window_layer, eight_ball_layer_get_layer(eight_ball_layer));
 }
 
 static void window_unload(Window *window) {
     eight_ball_layer_destroy(eight_ball_layer);
+    bitmap_layer_destroy(background_layer);
+    gbitmap_destroy(background_bitmap);
 }
 
 static void init(void) {
