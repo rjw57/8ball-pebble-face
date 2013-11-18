@@ -1,6 +1,5 @@
 #include <pebble.h>
 #include "eight-ball.h"
-#include "eight-ball-layer.h"
 
 static Window *window;
 static TextLayer *text_layer;
