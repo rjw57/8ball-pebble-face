@@ -1,16 +1,14 @@
 {
   "uuid": "450a2e5a-138f-4bdc-8217-687a64a0ca02",
-  "shortName": "clem",
-  "longName": "clem",
-  "companyName": "MakeAwesomeHappen",
+  "shortName": "Magic 8 Ball",
+  "longName": "Magic 8 Ball",
+  "companyName": "Rich Wareham",
   "versionCode": 1,
   "versionLabel": "1.0.0",
   "watchapp": {
     "watchface": true
   },
-  "appKeys": {
-    "dummy": 0
-  },
+  "appKeys": { },
   "resources": {
     "media": [
       {
