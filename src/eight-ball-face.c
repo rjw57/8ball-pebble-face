@@ -23,7 +23,7 @@ static void set_fortune_text(const char* text)
 
     GSize content_size = text_layer_get_content_size(text_layer);
     layer_set_frame(text_layer_get_layer(text_layer), (GRect) {
-            .origin = { 20, ((bounds.size.h-content_size.h)>>1) - 5},
+            .origin = { 20, ((bounds.size.h-content_size.h)>>1) - 6},
             .size = { bounds.size.w-40, content_size.h+20 }
     });
 }
@@ -84,6 +84,9 @@ static void window_unload(Window *window) {
 }
 
 static void init(void) {
+    // seed the rng with the current time
+    srand(time(NULL));
+
     window = window_create();
     window_set_window_handlers(window, (WindowHandlers) {
             .load = window_load,
