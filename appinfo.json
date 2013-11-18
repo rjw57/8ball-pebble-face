@@ -15,6 +15,12 @@
         "type": "png",
         "name": "BACKGROUND",
         "file": "eight-ball.png"
+      },
+      {
+        "type": "png",
+        "name": "MENU_ICON",
+        "file": "menu-icon.png",
+        "menuIcon": true
       }
     ]
   }
