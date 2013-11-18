@@ -5,6 +5,7 @@ static Window *window;
 static TextLayer *text_layer;
 static BitmapLayer *background_layer;
 static GBitmap* background_bitmap;
+time_t display_fortune_until;
 
 #define TEXT_LEN 32
 
@@ -28,15 +29,18 @@ static void set_fortune_text(const char* text)
 }
 
 // Called once per minute
-static void handle_minute_tick(struct tm* tick_time, TimeUnits units_changed) {
+static void handle_second_tick(struct tm* tick_time, TimeUnits units_changed) {
     static char tmp_str[TEXT_LEN];
-    strftime(tmp_str, sizeof(tmp_str), "%H:%M", tick_time);
-    set_fortune_text(tmp_str);
+    strftime(tmp_str, sizeof(tmp_str), "%H:%M:%S\n%d %b", tick_time);
+    if(time(NULL) > display_fortune_until) {
+        set_fortune_text(tmp_str);
+    }
 }
 
 static void handle_tap(AccelAxisType axis, int32_t direction)
 {
     set_fortune_text(eight_ball_messages[rand() % EIGHT_BALL_MESSAGE_COUNT]);
+    display_fortune_until = time(NULL) + 10;
 }
 
 static void window_load(Window *window) {
@@ -58,12 +62,14 @@ static void window_load(Window *window) {
     background_layer = bitmap_layer_create(bounds);
     bitmap_layer_set_bitmap(background_layer, background_bitmap);
 
+    display_fortune_until = 0;
+
     // Ensures time is displayed immediately (will break if NULL tick event accessed).
     // (This is why it's a good idea to have a separate routine to do the update itself.)
     time_t now = time(NULL);
     struct tm *current_time = localtime(&now);
-    handle_minute_tick(current_time, MINUTE_UNIT);
-    tick_timer_service_subscribe(MINUTE_UNIT, &handle_minute_tick);
+    handle_second_tick(current_time, SECOND_UNIT);
+    tick_timer_service_subscribe(SECOND_UNIT, &handle_second_tick);
 
     accel_tap_service_subscribe(&handle_tap);
 
