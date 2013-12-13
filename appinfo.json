@@ -4,7 +4,7 @@
   "longName": "Magic 8 Ball like Fortune Teller",
   "companyName": "Rich Wareham",
   "versionCode": 1,
-  "versionLabel": "1.0.0",
+  "versionLabel": "1.0.1",
   "watchapp": {
     "watchface": true
   },
